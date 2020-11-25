@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>测试后台</title>
+	<!--<link rel="stylesheet" type="text/css" href="<?php echo __STATIC__; ?>/js/layui-v2.5.6/css/layui.css">-->
+	<link rel="stylesheet" href="./public/static/js/layui-v2.5.6/css/layui.css">
+
+	<style>
+		#box{
+			min-height: 600px;
+			min-width: 70%;
+			width:1000px;
+			text-align: center;
+			background: #fff;
+			margin: 0 auto;
+			margin-top: 20px;
+			padding-left: 20px;
+			padding-right: 20px;
+		}
+	</style>
+</head>
+<body style="background:#A2FF82">
+	<div id="box">
+		<div style="width: 100%; height: 30px; padding-top: 20px; padding-bottom: 20px;">
+			这是标题
+		</div>
+		<table id="content" lay-filter="test" width="900">
+
+		</table>
+	</div>
+</body>
+</html>
+
+<!--<script src="<?php echo __STATIC__; ?>/js/layui-v2.5.6/layui.js"></script>-->
+<script src="./public/static/js/jquery-3.3.1.min.js"></script>
+<script src="./public/static/js/layui-v2.5.6/layui.js"></script>
+<script type="text/javascript">
+	layui.use(['form', 'laydate', 'table', 'layer'], function () {
+        var table = layui.table,
+            form = layui.form,
+            layer = layui.layer,
+            laydate = layui.laydate;
+        //展示表格
+        table.render({
+            elem: '#content',
+            id: 'content',
+            cellMinWidth: 160,
+            url: "index.php/Admin/Rjax/test", //数据接口
+            method: 'post',
+            where: {
+
+            },
+            page: {
+                limit: 10,//默认每页几条
+                groups: 10,//连续显示几页
+                layout: ['count', 'limit', 'prev', 'page', 'next', 'skip'],//分页位置
+                first: "首页",
+                last: "尾页",
+                theme: "#0085ff"
+            },
+            cols: [[ //表头
+                {
+                    field: 'id',
+                    title: 'uid',
+                    align: 'center',
+                }, {
+                    field: 'ygmingcheng',
+                    title: '姓名',
+                    align: 'center',
+                }, {
+                    field: 'xingbie',
+                    title: '性别',
+                    align: 'center',
+                }, {
+                    field: 'chushengrq',
+                    title: '出生日期',
+                    align: 'center',
+                }, {
+                    field: 'dianhua',
+                    title: '电话',
+                    align: 'center',
+                }, {
+                    field: 'is_super',
+                    title: '是不是管理员',
+                    align: 'center',
+                }
+            ]]
+        });
+        //监听工具条
+        table.on('tool(content)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'info') {
+                $.ajax({
+                    type: 'post',
+                    url: "{:U('PropertyVillage/reportinfo')}",
+                    data: {
+                        id: data.id,
+                    },
+                    dataType: "json",
+                    success: function (res) {
+                        if (res.code == 200) {
+                            info = res.data;
+                            $('#infoname').text(info.xiaoqu_name);
+                            $('#infoxiaoqu').text(info.xiaoqu_info);
+                            $('#infonumber').text(info.bianhao);
+                            $('#infokehu').text(info.kehu);
+                            $('#infotime').text(info.report_time);
+                            $('#infohuxing').text(info.mind_name);
+                            $('#inforemark').text(info.remarks);
+                            //报备信息弹窗
+                            layer.open({
+                                type: 1,
+                                content: $('#info'),
+                                offset: 'auto',
+                                area: ['700px', '450px'],
+                                btn: ['关闭'],
+                                title: '报备详情',
+                                resize: false,
+                                yes: function (index, layero) {
+                                    layer.closeAll();
+                                },
+                                success: function (layero) {
+                                    // layero.find('.layui-layer-btn').css('text-align', 'center')
+                                },
+                                error: function (errorMsg) {
+
+                                }
+                            })
+                        }else {
+                            layer.msg(res.message, {icon: 5}, function () {
+                            });
+                        }
+                    }
+                })
+            }
+            else if (obj.event === 'trial') {
+                $.ajax({
+                    type: 'post',
+                    url: "{:U('PropertyVillage/reporttrial')}",
+                    data: {
+                        id: data.id,
+                    },
+                    dataType: "json",
+                    async:true,
+                    success: function (res) {
+                        info = res.data;
+                        $('#trialname').text(info.xiaoqu_name);
+                        $('#trialxiaoqu').text(info.xiaoqu_info);
+                        $('#trialnumber').text(info.bianhao);
+                        $('#trialkehu').text(info.kehu);
+                        $('#trialtime').text(info.report_time);
+                        $('#trialhuxing').text(info.mind_name);
+                        $('#trialremark').text(info.remarks);
+                        $('#shenheid').val(info.id);
+                        $("input[name='pass']").prop('checked', false);
+                        $('#cause').val('');
+                        layui.form.render();
+                        //审核弹窗
+                        layer.open({
+                            type: 1,
+                            content: $('#trial'),
+                            area: ['750px', '500px'],
+                            btn: [ '取消','确定'],
+                            title: '报备审核',
+                            resize: false,
+                            yes: function (index, layero) {
+                                layer.closeAll();
+                            },
+                            btn2: function (index) {
+                                $('.hidebut').click();
+                                return false;
+                                // layer.closeAll();
+                            },
+                            success: function () {
+
+                            },
+                        });
+                    }
+                })
+            }
+        });
+    });
+</script>
