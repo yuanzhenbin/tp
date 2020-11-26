@@ -47,5 +47,6 @@ class RjaxController
             }
         }
         $mysqli->close();
+
     }
 }
