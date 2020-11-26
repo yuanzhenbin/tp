@@ -18,11 +18,34 @@ class RjaxController
     {
         if (IS_POST) {
 
-            $count = $data = M('yonghu')->where(['id' => ['gt' , 0]])->count();
-            $data = M('yonghu')->where(['id' => ['gt' , 0]])->limit(0,10)->order('id desc')->select();
-            exitJson($data,0);
+            $page = I('page')?I('page'):1;
+            $limit = I('limit')?I('limit'):10;
+            $firstRow = (($page - 1) * $limit);
+
+            $where = [];
+            $where['id'] = ['gt' , 0];
+
+            $count = $data = M('yonghu')->where($where)->count();
+            $data = M('yonghu')->where($where)->limit($firstRow,$limit)->order('id desc')->select();
+            exit(json_encode(['data' => $data, 'count' => $count, 'code' => 0]));
         } else {
             exitJson([],101,'异常请求');
         }
+    }
+
+    public function test_mysqli()
+    {
+        $sql = "select * from jjrxt_yonghu";
+        $mysqli = mysqli_connect('127.0.0.1', 'root', '', 'tets', '3306');
+        $data = mysqli_query($mysqli,$sql);
+        if($data)
+        {
+            if(mysqli_num_rows($data))
+            {
+                $result_array = mysqli_fetch_array($data);
+                var_dump($data);die;
+            }
+        }
+        $mysqli->close();
     }
 }

@@ -99,7 +99,7 @@ class Model
 
     public function count()
     {
-        $sql = 'select '.$this->field.' from '.$this->tableName;
+        $sql = "select COUNT(*) as total from ".$this->tableName;
 
         $where = $this->where;
         if (!empty($where)) {
@@ -123,7 +123,13 @@ class Model
 
         $connect = $this->db();
         $result = $connect->query($sql);
-        return $result->fetchAll(PDO::FETCH_ASSOC);
+        $count =  $result->fetchAll(PDO::FETCH_ASSOC);
+        if (isset($count[0]['total'])) {
+            return $count[0]['total'];
+        } else {
+            return 0;
+        }
+
     }
 
     public function where($data = null)

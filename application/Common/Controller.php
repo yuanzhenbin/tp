@@ -16,12 +16,25 @@ class Tp
     {
 		$tplFile = str_replace("\\","/",__APP__.__MODULE__.'/view/'.$fileName);
 		$cachePath = str_replace("\\","/",__CACHE__);
+        $runtimePath = str_replace("\\","/",__APP__.'/Runtime');
 
 		if(!file_exists($tplFile)){
 			return false;
 		} else {
             $templateName = md5(str_replace("/",'_',$tplFile));
             $comFileName = $cachePath.'/'.$templateName.'.php';
+
+            if (!file_exists($runtimePath)) {
+                mkdir($runtimePath);
+            }
+
+            if (!file_exists($runtimePath.'/Cache')) {
+                mkdir($runtimePath.'/Cache');
+            }
+
+            if (!file_exists($runtimePath.'/Logs')) {
+                mkdir($runtimePath.'/Logs');
+            }
 
             if (!file_exists($cachePath)) {
                 mkdir($cachePath);

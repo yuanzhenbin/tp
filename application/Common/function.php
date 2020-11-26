@@ -52,3 +52,9 @@ function M($tableName = '', $connect = [])
     $db = new Model($tableName,$connect);
     return $db;
 }
+
+//连接数据库
+function writeLog($message, $path = [])
+{
+
+}
