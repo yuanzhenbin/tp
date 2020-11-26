@@ -1,3 +1,4 @@
-Application/Runtime/*
-config/*
+Application/Runtime/Cache/*
+Application/Runtime/Logs/*
+config/config.php
 
