@@ -2,7 +2,7 @@
 include __APP__.'Common/function.php';
 include __APP__.'Common/Controller.php';
 
-class RjaxController
+class AjaxController
 {
     public function __construct()
     {
