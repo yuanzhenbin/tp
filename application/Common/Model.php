@@ -144,21 +144,21 @@ class Model
                     }
                     if (is_array($value)) {
                         if (count($value) == 2) {
-                            if (is_array($value[0])) {
-                                $this->where = '';//todo
+                            if (isset($this->change[$value[0]])) {
+                                $the_value = $this->change[$value[0]];
                             } else {
-                                if (isset($this->change[$value[0]])) {
-                                    $the_value = $this->change[$value[0]];
-                                } else {
-                                    $the_value = $value[0];
-                                }
-                                $this->where = $this->where . $key . " " . $the_value . " " . $value[1] . " ";
+                                $the_value = $this->sql_check($value[0]);
+                            }
+                            if ($the_value == 'in') {
+                                $this->where = $this->where." `".$this->sql_check($key)."` ".$the_value." (".$this->sql_check($value[1]).") ";
+                            } else {
+                                $this->where = $this->where." `".$this->sql_check($key)."` ".$the_value." ".$this->sql_check($value[1])." ";
                             }
                         } else {
                             $this->where = '';//todo
                         }
                     } else {
-                        $this->where = $this->where.$key." = ".$value." ";
+                        $this->where = $this->where." `".$this->sql_check($key)."` = '".$this->sql_check($value)."' ";
                     }
                 }
             } else {
@@ -174,7 +174,7 @@ class Model
         $this->group = '';
 
         if (!empty($data)) {
-            $this->group = ' group by '.$data;
+            $this->group = ' group by '.$this->sql_check($data);
         }
 
         return $this;
@@ -185,7 +185,7 @@ class Model
         $this->order = '';
 
         if (!empty($data)) {
-            $this->order = ' order by '.$data;
+            $this->order = ' order by '.$this->sql_check($data);
         }
 
         return $this;
@@ -197,11 +197,108 @@ class Model
 
         if (is_numeric($start) && $start >= 0) {
             $this->limit = ' limit '.$start;
-        }
-        if (is_numeric($end) && $end >= 0) {
-            $this->limit = $this->limit.' , '.$end;
+            if (is_numeric($end) && $end >= 0) {
+                $this->limit = $this->limit.' , '.$end;
+            }
         }
 
         return $this;
+    }
+
+    public function field($data = null)
+    {
+        $this->field = '*';
+
+        if (!empty($data)) {
+            $this->field = $data;
+        }
+
+        return $this;
+    }
+
+    function sql_check($value)
+    {
+        if(!get_magic_quotes_gpc()) {
+            // 进行过滤
+            $value = addslashes($value);
+        }
+
+        $value = str_replace("_", "\_", $value);
+        $value = str_replace("%", "\%", $value);
+
+        return $value;
+    }
+
+    public function add($data = [])
+    {
+        if (empty($data)) {
+            return false;
+        }
+
+        $sql = 'insert into '.$this->tableName;
+
+        $add_key = array_keys($data);
+        $add_value = array_values($data);
+        if ($add_key && $add_value) {
+            $add_key = "`".implode("`,`",$add_key)."`";
+            $add_value = "'".implode("','",$add_value)."'";
+        } else {
+            return false;
+        }
+
+        $sql = $sql.' ('.$this->sql_check($add_key).') values ('.$this->sql_check($add_value).')';
+
+        $connect = $this->db();
+        $result = $connect->query($sql);
+        return $result;
+    }
+
+    public function save($data = [])
+    {
+        if (empty($data)) {
+            return false;
+        }
+
+        $sql = 'update '.$this->tableName.' set ';
+
+        $save_key = array_keys($data);
+        $save_value = array_values($data);
+        if ($save_key && $save_value) {
+            $key_number = count($save_key);
+            foreach ($save_key as $key => $value) {
+                if ($key+1 == $key_number) {
+                    $sql = $sql.' `'.$this->sql_check($value).'` = "'.$this->sql_check($save_value[$key]).'" ';
+                } else {
+                    $sql = $sql.' `'.$this->sql_check($value).'` = "'.$this->sql_check($save_value[$key]).'", ';
+                }
+            }
+        } else {
+            return false;
+        }
+
+        $where = $this->where;
+        if (!empty($where)) {
+            $sql = $sql.$where;
+        }
+
+        $connect = $this->db();
+        $result = $connect->query($sql);
+        return $result;
+    }
+
+    public function delete()
+    {
+        $sql = 'delete from '.$this->tableName;
+
+        $where = $this->where;
+        if (!empty($where)) {
+            $sql = $sql.$where;
+        } else {
+            return false;
+        }
+        
+        $connect = $this->db();
+        $result = $connect->query($sql);
+        return $result;
     }
 }

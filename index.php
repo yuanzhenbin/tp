@@ -53,7 +53,7 @@ include __APP__.$module."/Controller/".$controller.__CSUFFIX__.".php";
 define("IS_POST", REQUEST_METHOD == 'POST'? true : false);
 define("IS_GET", REQUEST_METHOD == 'GET'? true : false);
 
-$controller_name = $controller."Controller";
+$controller_name = '\\'.$module.'\\controller\\'.$controller."Controller";
 
 $ctrl = new $controller_name();
 $ctrl->$action();
