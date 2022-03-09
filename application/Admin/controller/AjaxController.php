@@ -14,15 +14,26 @@ class AjaxController extends Tp
     public function test()
     {
         if (IS_POST) {
-            $page = I('page')?I('page'):1;
-            $limit = I('limit')?I('limit'):10;
+            $page = I('page',1);
+            $limit = I('limit',10);
             $firstRow = (($page - 1) * $limit);
 
             $where = [];
-            $where['id'] = ['gt', 0];
+            $name = I('name');
+            $phone = I('phone');
+            if ($name) {
+                $where['name'] = ['like','%'.$name.'%'];
+            }
+            if ($phone) {
+                $where['phone'] = $phone;
+            }
 
-            $count = $data = M('yonghu')->where($where)->count();
-            $data = M('yonghu')->field('*')->where($where)->limit($firstRow,$limit)->order('id desc')->select();
+            $count = $data = M('user')->where($where)->count();
+            $data = M('user')->field('*')->where($where)->limit($firstRow,$limit)->order('id desc')->select();
+            $sex_list = [0=>'未知', 1=>'男', 2=>'女'];
+            foreach ($data as $k => $v) {
+                $data[$k]['sex_show'] = isset($sex_list[$v['sex']])?$sex_list[$v['sex']]:'未知';
+            }
             exit(json_encode(['data' => $data, 'count' => $count, 'code' => 0]));
         } else {
             exitJson([],101,'异常请求');
@@ -32,11 +43,23 @@ class AjaxController extends Tp
     public function add()
     {
         $name = I('name');
-        $id = I('id');
+        $phone = I('phone');
+        $account = I('account');
+        $password = I('password');
 
-        if ($name && $id) {
-            $add_data = ['ygmingcheng' => $name,'id'=> $id];
-            $result = M('yonghu')->add($add_data);
+        if ($name && $phone && $account && $password) {
+            $check = M('user')->where(['account' => $account])->find();
+            if ($check) {
+                exitJson([],101,'账号不能重复');
+            }
+
+            $add_data = [];
+            $add_data['name'] = $name;
+            $add_data['phone'] = $phone;
+            $add_data['account'] = $account;
+            $add_data['password'] = md5($password);
+            $add_data['add_time'] = time();
+            $result = M('user')->add($add_data);
         } else {
             exitJson([],101,'缺少参数');
         }
@@ -50,16 +73,18 @@ class AjaxController extends Tp
 
     public function update()
     {
-        $name = I('name');
         $id = I('id');
+        $name = I('name');
+        $phone = I('phone');
 
-        if ($name && $id) {
-            $save_data = [];
-            $save_data['ygmingcheng'] = $name;
-            $result = M('yonghu')->where(['id' => $id])->save($save_data);
-        } else {
-            exitJson([],101,'缺少参数');
+        if (!$id) {
+            exitJson([], 101, '缺少参数');
         }
+
+        $save_data = [];
+        $save_data['name'] = $name;
+        $save_data['phone'] = $phone;
+        $result = M('user')->where(['id' => $id])->save($save_data);
 
         if ($result) {
             exitJson([],200,'修改成功');
@@ -73,7 +98,7 @@ class AjaxController extends Tp
         $id = I('id');
 
         if ($id) {
-            $result = M('yonghu')->where(['id' => $id])->delete();
+            $result = M('user')->where(['id' => $id])->delete();
         } else {
             exitJson([],101,'缺少参数');
         }
@@ -87,7 +112,7 @@ class AjaxController extends Tp
 
     public function test_mysqli()
     {
-        $sql = "select * from jjrxt_yonghu";
+        $sql = "select * from user";
         $mysqli = mysqli_connect('127.0.0.1', 'root', '', 'tets', '3306');
         $data = mysqli_query($mysqli,$sql);
         if($data)

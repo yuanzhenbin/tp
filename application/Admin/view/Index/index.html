@@ -7,7 +7,12 @@
 	<link rel="stylesheet" href="./public/static/js/layui-v2.5.6/css/layui.css">
 
 	<style>
-		#box{
+		body {
+			/*background:#A2FF82;*/
+			/*background-image: linear-gradient(red,#ff8500,yellow,#A2FF82,#A2FF82,#0085ff,blue,purple);*/
+			background-image: linear-gradient(#ff4500,#ff8500,yellow,#A2FF82,#0085ff,#bf3eff);
+		}
+		#box {
 			min-height: 600px;
 			min-width: 70%;
 			width:1000px;
@@ -15,26 +20,144 @@
 			background: #fff;
 			margin: 0 auto;
 			margin-top: 20px;
-			padding-left: 20px;
-			padding-right: 20px;
+			padding: 30px 50px;
+		}
+		.row_box {
+			margin-left: 50px;
+			margin-top: 20px;
+		}
+		.left_box {
+			display: inline-block;
+		}
+		.right_box {
+			display: inline-block;
+		}
+		input {
+			border-radius: 2px;
+			border: 1px solid #dddddd;
+			height: 26px;
+			width: 200px;
+			padding-left: 5px;
+		}
+		.search_box {
+			margin: 20px 0;
+			text-align: left;
+		}
+		.search_box div {
+			margin-right: 10px;
+			display: inline-block;
+		}
+		.button_span {
+			height: 24px;
+			line-height: 24px;
+			text-align: center;
+			background: #0085ff;
+			color: #fff;
+			display: inline-block;
+			width: 50px;
+			border: 1px solid #0085ff;
+			border-radius: 2px;
+			cursor: pointer;
 		}
 	</style>
 </head>
-<body style="background:#A2FF82">
+<body>
 	<div id="box">
-		<div style="width: 100%; height: 30px; padding-top: 20px; padding-bottom: 20px;">
-			这是标题
+		<div style="width: 100%; height: 30px; padding-top: 20px; padding-bottom: 20px; font-size: 24px;">
+			用户列表
 		</div>
-		<table id="content" lay-filter="test" width="900">
+		<div class="search_box">
+			<div>
+				姓名：<input type="text" name="name_search" id="name_search" placeholder="姓名使用模糊查询">
+			</div>
+			<div>
+				电话：<input type="text" name="phone_search" id="phone_search" placeholder="电话使用精准查询">
+			</div>
+			<div>
+				<span class="button_span" id="search">搜索</span>
+			</div>
+			<div style="float: right">
+				<span class="button_span" id="add">添加</span>
+			</div>
+		</div>
+		<table id="content" lay-filter="data_table" width="900">
 
 		</table>
+	</div>
+
+	<div id="add_box" class="layui-form" style="display: none; padding-top: 20px; padding-left: 10px;">
+		<div class="row_box">
+			<div class="left_box">
+				姓名：
+			</div>
+			<div class="right_box">
+				<input type="text" name="add_name" id="add_name" autocomplete="off">
+			</div>
+		</div>
+		<div class="row_box">
+			<div class="left_box">
+				电话：
+			</div>
+			<div class="right_box">
+				<input type="text" name="add_phone" id="add_phone" autocomplete="off">
+			</div>
+		</div>
+		<div class="row_box">
+			<div class="left_box">
+				账号：
+			</div>
+			<div class="right_box">
+				<input type="text" name="add_account" id="add_account" autocomplete="off">
+			</div>
+		</div>
+		<div class="row_box">
+			<div class="left_box">
+				密码：
+			</div>
+			<div class="right_box">
+				<input type="text" name="add_password" id="add_password" autocomplete="off">
+			</div>
+		</div>
+	</div>
+
+	<div id="edit_box" class="layui-form" style="display: none; padding-top: 20px; padding-left: 10px;">
+		<div class="row_box">
+			<div class="left_box">
+				姓名：
+			</div>
+			<div class="right_box">
+				<input type="text" name="edit_name" id="edit_name" autocomplete="off">
+			</div>
+		</div>
+		<div class="row_box">
+			<div class="left_box">
+				电话：
+			</div>
+			<div class="right_box">
+				<input type="text" name="edit_phone" id="edit_phone" autocomplete="off">
+			</div>
+		</div>
+		<input type="hidden" name="edit_id" id="edit_id">
 	</div>
 </body>
 </html>
 
 <!--<script src="__STATIC__/js/layui-v2.5.6/layui.js"></script>-->
-<script src="./public/static/js/jquery-3.3.1.min.js"></script>
+<!--<script src="./public/static/js/jquery-3.3.1.min.js"></script>-->
+<script src="./public/static/js/jquery-3.6.0.min.js"></script>
 <script src="./public/static/js/layui-v2.5.6/layui.js"></script>
+<script type="text/html" id="operation">
+	{{#  if(d.id > 0){ }}
+	<a class="file_btn" lay-event="edit_button" style="cursor:pointer">
+		<span style="color: #0085ff">修改</span>
+	</a>
+	&nbsp;&nbsp;
+	{{#  } }}
+
+	<a class="file_btn" lay-event="delete_button" style="cursor:pointer">
+		<span style="color: #0085ff">删除</span>
+	</a>
+</script>
 <script type="text/javascript">
 	layui.use(['form', 'laydate', 'table', 'layer'], function () {
         var table = layui.table,
@@ -48,9 +171,7 @@
             cellMinWidth: 160,
             url: "index.php/Admin/Ajax/test", //数据接口
             method: 'post',
-            where: {
-
-            },
+            where: {},
             page: {
                 limit: 10,//默认每页几条
                 groups: 10,//连续显示几页
@@ -62,119 +183,183 @@
             cols: [[ //表头
                 {
                     field: 'id',
-                    title: 'uid',
+                    title: 'ID',
                     align: 'center',
                 }, {
-                    field: 'ygmingcheng',
+					field: 'account',
+					title: '账号',
+					align: 'center',
+				}, {
+                    field: 'name',
                     title: '姓名',
                     align: 'center',
                 }, {
-                    field: 'xingbie',
+                    field: 'sex_show',
                     title: '性别',
                     align: 'center',
                 }, {
-                    field: 'chushengrq',
-                    title: '出生日期',
-                    align: 'center',
-                }, {
-                    field: 'dianhua',
+                    field: 'phone',
                     title: '电话',
                     align: 'center',
-                }
+                }, {
+					title: '操作',
+					align: 'center',
+					templet: '#operation',
+					// fixed: 'right'
+				}
             ]]
         });
         //监听工具条
-        table.on('tool(content)', function (obj) {
-            var data = obj.data;
-            if (obj.event === 'info') {
-                $.ajax({
-                    type: 'post',
-                    url: "{:U('PropertyVillage/reportinfo')}",
-                    data: {
-                        id: data.id,
-                    },
-                    dataType: "json",
-                    success: function (res) {
-                        if (res.code == 200) {
-                            info = res.data;
-                            $('#infoname').text(info.xiaoqu_name);
-                            $('#infoxiaoqu').text(info.xiaoqu_info);
-                            $('#infonumber').text(info.bianhao);
-                            $('#infokehu').text(info.kehu);
-                            $('#infotime').text(info.report_time);
-                            $('#infohuxing').text(info.mind_name);
-                            $('#inforemark').text(info.remarks);
-                            //报备信息弹窗
-                            layer.open({
-                                type: 1,
-                                content: $('#info'),
-                                offset: 'auto',
-                                area: ['700px', '450px'],
-                                btn: ['关闭'],
-                                title: '报备详情',
-                                resize: false,
-                                yes: function (index, layero) {
-                                    layer.closeAll();
-                                },
-                                success: function (layero) {
-                                    // layero.find('.layui-layer-btn').css('text-align', 'center')
-                                },
-                                error: function (errorMsg) {
-
-                                }
-                            })
-                        }else {
-                            layer.msg(res.message, {icon: 5}, function () {
-                            });
-                        }
-                    }
-                })
-            }
-            else if (obj.event === 'trial') {
-                $.ajax({
-                    type: 'post',
-                    url: "{:U('PropertyVillage/reporttrial')}",
-                    data: {
-                        id: data.id,
-                    },
-                    dataType: "json",
-                    async:true,
-                    success: function (res) {
-                        info = res.data;
-                        $('#trialname').text(info.xiaoqu_name);
-                        $('#trialxiaoqu').text(info.xiaoqu_info);
-                        $('#trialnumber').text(info.bianhao);
-                        $('#trialkehu').text(info.kehu);
-                        $('#trialtime').text(info.report_time);
-                        $('#trialhuxing').text(info.mind_name);
-                        $('#trialremark').text(info.remarks);
-                        $('#shenheid').val(info.id);
-                        $("input[name='pass']").prop('checked', false);
-                        $('#cause').val('');
-                        layui.form.render();
-                        //审核弹窗
-                        layer.open({
-                            type: 1,
-                            content: $('#trial'),
-                            area: ['750px', '500px'],
-                            btn: [ '取消','确定'],
-                            title: '报备审核',
-                            resize: false,
-                            yes: function (index, layero) {
-                                layer.closeAll();
-                            },
-                            btn2: function (index) {
-                                $('.hidebut').click();
-                                return false;
-                                // layer.closeAll();
-                            },
-                            success: function () {
-
-                            },
-                        });
-                    }
-                })
+        table.on('tool(data_table)', function (obj) {
+            if (obj.event === 'edit_button') {
+				$('#edit_id').val(obj.data.id);
+				$('#edit_name').val(obj.data.name);
+				$('#edit_phone').val(obj.data.phone);
+				layer.open({
+					type: 1,
+					content: $('#edit_box'),
+					area: ['700px', '400px'],
+					title: '修改用户',
+					btn: ['保存', '取消'],
+					btnAlign: 'r',
+					btn1: function (index) {
+						var id = $('#edit_id').val();
+						var name = $('#edit_name').val();
+						var phone = $('#edit_phone').val();
+						$.ajax({
+							type: 'post',
+							url: "index.php/Admin/Ajax/update",
+							data: {
+								id: id,
+								name: name,
+								phone: phone,
+							},
+							dataType: "json",
+							success: function (res) {
+								if (res.code == 200) {
+									layer.msg(res.message, {icon: 1});
+									layer.close(index);
+									table.reload('content',
+										{
+											where: {},
+											page: {
+												curr: 1 //重新从第 1 页开始
+											}
+										}
+									);
+								} else {
+									layer.msg(res.message, {icon: 5});
+								}
+							}
+						})
+					},
+					btn2: function (index) {
+						layer.close(index);
+					}
+				})
+            } else if (obj.event === 'delete_button') {
+				var id = obj.data.id;
+				layer.confirm(`确定要删除吗？`, {
+					btn: ['确定', '取消'],
+					btn1: function (index) {
+						$.ajax({
+							type: 'post',
+							url: "index.php/Admin/Ajax/delete",
+							data: {
+								id: id,
+							},
+							dataType: "json",
+							success: function (res) {
+								if (res.code == 200) {
+									layer.msg(res.message, {icon: 1}, function () {
+										layer.close(index);
+										table.reload('content',
+											{
+												where: {},
+												page: {
+													curr: 1 //重新从第 1 页开始
+												}
+											}
+										);
+									});
+								} else {
+									layer.msg(res.message, {icon: 5});
+								}
+							}
+						})
+					},
+					btn2: function (index) {
+						layer.close(index);
+					}
+				})
             }
         });
+		//添加
+		$("#add").click(function () {
+			$('#add_name').val('');
+			$('#add_phone').val('');
+			$('#add_account').val('');
+			$('#add_password').val('');
+			layer.open({
+				type: 1,
+				content: $('#add_box'),
+				area: ['700px', '400px'],
+				title: '添加用户',
+				btn: ['保存', '取消'],
+				btnAlign: 'r',
+				btn1: function (index) {
+					var name = $('#add_name').val();
+					var phone = $('#add_phone').val();
+					var account = $('#add_account').val();
+					var password = $('#add_password').val();
+					$.ajax({
+						type: 'post',
+						url: "index.php/Admin/Ajax/add",
+						data: {
+							name: name,
+							phone: phone,
+							account: account,
+							password: password,
+						},
+						dataType: "json",
+						success: function (res) {
+							if (res.code == 200) {
+								layer.msg(res.message, {icon: 1});
+								layer.close(index);
+								table.reload('content',
+									{
+										where: {},
+										page: {
+											curr: 1 //重新从第 1 页开始
+										}
+									}
+								);
+							} else {
+								layer.msg(res.message, {icon: 5});
+							}
+						}
+					})
+				},
+				btn2: function (index) {
+					layer.close(index);
+				}
+			})
+		});
+		//搜索
+		$("#search").click(function () {
+			var name = $('#name_search').val();
+			var phone = $('#phone_search').val();
+			table.reload('content',
+				{
+					where: {
+						name:name,
+						phone:phone,
+					},
+					page: {
+						curr: 1 //重新从第 1 页开始
+					}
+				}
+			);
+		});
     });
 </script>

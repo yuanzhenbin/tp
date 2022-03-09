@@ -97,6 +97,32 @@ class Model
         return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function find()
+    {
+        $sql = 'select '.$this->field.' from '.$this->tableName;
+
+        $where = $this->where;
+        if (!empty($where)) {
+            $sql = $sql.$where;
+        }
+
+        $group = $this->group;
+        if (!empty($group)) {
+            $sql = $sql.$group;
+        }
+
+        $order = $this->order;
+        if (!empty($order)) {
+            $sql = $sql.$order;
+        }
+
+        $sql = $sql.' limit 1';
+
+        $connect = $this->db();
+        $result = $connect->query($sql);
+        return $result->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function count()
     {
         $sql = "select COUNT(*) as total from ".$this->tableName;
@@ -152,7 +178,7 @@ class Model
                             if ($the_value == 'in') {
                                 $this->where = $this->where." `".$this->sql_check($key)."` ".$the_value." (".$this->sql_check($value[1]).") ";
                             } else {
-                                $this->where = $this->where." `".$this->sql_check($key)."` ".$the_value." ".$this->sql_check($value[1])." ";
+                                $this->where = $this->where." `".$this->sql_check($key)."` ".$the_value." '".$this->sql_check($value[1])."' ";
                             }
                         } else {
                             $this->where = '';//todo
@@ -223,8 +249,8 @@ class Model
             $value = addslashes($value);
         }
 
-        $value = str_replace("_", "\_", $value);
-        $value = str_replace("%", "\%", $value);
+//        $value = str_replace("_", "\_", $value);
+//        $value = str_replace("%", "\%", $value);
 
         return $value;
     }
@@ -239,6 +265,12 @@ class Model
 
         $add_key = array_keys($data);
         $add_value = array_values($data);
+        foreach ($add_key as $k => $v) {
+            $add_key[$k] = $this->sql_check($v);
+        }
+        foreach ($add_value as $k => $v) {
+            $add_value[$k] = $this->sql_check($v);
+        }
         if ($add_key && $add_value) {
             $add_key = "`".implode("`,`",$add_key)."`";
             $add_value = "'".implode("','",$add_value)."'";
@@ -246,7 +278,7 @@ class Model
             return false;
         }
 
-        $sql = $sql.' ('.$this->sql_check($add_key).') values ('.$this->sql_check($add_value).')';
+        $sql = $sql.' ('.$add_key.') values ('.$add_value.')';
 
         $connect = $this->db();
         $result = $connect->query($sql);
