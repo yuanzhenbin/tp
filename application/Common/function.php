@@ -59,8 +59,30 @@ function M($tableName = '', $connect = [])
     return $db;
 }
 
-//连接数据库
-function writeLog($message, $path = [])
+//记录日志
+function writeLog($message, $tip = 'warning', $path = '')
 {
+    if (!is_string($message)) {
+        $message = json_encode($message,JSON_UNESCAPED_UNICODE|JSON_FORCE_OBJECT);
+        if (!is_string($message)) {
+            $message = '此处日志非字符串或数组格式，写入错误';
+        }
+    }
+    if (!is_string($tip)) {
+        $tip = 'warning';
+    }
+    $message = date('Y-m-d H:i:s')."[".$tip."]:\r\n".$message."\r\n";
 
+    $log_name = 'log_'.date('y_m_d',time()).'.log';
+    if (!$path) {
+        $log_path = $_SERVER["DOCUMENT_ROOT"] . '/application/Runtime/Logs';
+    } else {
+        $log_path = $_SERVER["DOCUMENT_ROOT"] . $path;
+    }
+    if (!is_dir($log_path)) {
+        mkdir($log_path, 0777, true);
+    }
+
+    $file_open = fopen($log_path.'/'.$log_name,'a+');
+    fwrite($file_open,$message);
 }
