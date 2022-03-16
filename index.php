@@ -4,10 +4,15 @@ define("DS", DIRECTORY_SEPARATOR);
 define("__ROOT__", str_replace("\\","/",__DIR__).'/');
 define("__APP__", __ROOT__.'application/');
 define("__PROJECT__", __ROOT__.'application/');
-define("__PUBLIC__", __ROOT__.'public');
 define("__STATIC__", __ROOT__.'public/static');
 define("__CSUFFIX__", 'Controller');
 define("REQUEST_METHOD", $_SERVER['REQUEST_METHOD']);
+
+define('__HTTP__', 'http');
+define('__URL__', __HTTP__.'://'.$_SERVER['SERVER_NAME']);
+define('APP_PATH', __URL__.'/application');
+define('__PUBLIC__', __URL__.'/public');
+
 $module_restrictions = array('Admin', 'Home');
 
 //默认请求路径

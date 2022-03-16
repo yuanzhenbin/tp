@@ -15,7 +15,7 @@ class Tp
 
 	public function display($fileName)
     {
-		$tplFile = str_replace("\\","/",__APP__.__MODULE__.'/view/'.$fileName);
+		$tplFile = str_replace("\\","/",__APP__.__MODULE__.'/view/'.$fileName.'.html');
 		$cachePath = str_replace("\\","/",__CACHE__);
         $runtimePath = str_replace("\\","/",__APP__.'/Runtime');
 
@@ -68,6 +68,16 @@ class Tp
         $replacement = array(
             '<?php echo ${1}; ?>'
         );
+        $repContent = preg_replace($pattern, $replacement, $repContent);
+
+        $pattern = array(
+            '/\{:([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)(.*)\}/i'
+        );
+
+        $replacement = array(
+            '<?php echo ${1}${2}; ?>'
+        );
+
         $repContent = preg_replace($pattern, $replacement, $repContent);
 
 		return $repContent;

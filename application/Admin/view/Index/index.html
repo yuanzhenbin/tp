@@ -4,7 +4,8 @@
 	<meta charset="UTF-8">
 	<title>测试后台</title>
 	<!--<link rel="stylesheet" type="text/css" href="__STATIC__/js/layui-v2.5.6/css/layui.css">-->
-	<link rel="stylesheet" href="./public/static/js/layui-v2.5.6/css/layui.css">
+	<link rel="stylesheet" href="__PUBLIC__/static/js/layui-v2.5.6/css/layui.css">
+    <link rel="stylesheet" href="__PUBLIC__/static/css/common.css">
 
 	<style>
 		body {
@@ -21,43 +22,6 @@
 			margin-top: 20px;
 			padding: 30px 50px;
 		}
-		.row_box {
-			margin-left: 50px;
-			margin-top: 20px;
-		}
-		.left_box {
-			display: inline-block;
-		}
-		.right_box {
-			display: inline-block;
-		}
-		input {
-			border-radius: 2px;
-			border: 1px solid #dddddd;
-			height: 26px;
-			width: 200px;
-			padding-left: 5px;
-		}
-		.search_box {
-			margin: 20px 0;
-			text-align: left;
-		}
-		.search_box div {
-			margin-right: 10px;
-			display: inline-block;
-		}
-		.button_span {
-			height: 24px;
-			line-height: 24px;
-			text-align: center;
-			background: #0085ff;
-			color: #fff;
-			display: inline-block;
-			width: 50px;
-			border: 1px solid #0085ff;
-			border-radius: 2px;
-			cursor: pointer;
-		}
 	</style>
 </head>
 <body>
@@ -67,10 +31,10 @@
 		</div>
 		<div class="search_box">
 			<div>
-				姓名：<input type="text" name="name_search" id="name_search" placeholder="姓名使用模糊查询">
+				姓名$test：<input type="text" name="name_search" id="name_search" placeholder="姓名使用模糊查询">
 			</div>
 			<div>
-				电话：<input type="text" name="phone_search" id="phone_search" placeholder="电话使用精准查询">
+				电话{$test}：<input type="text" name="phone_search" id="phone_search" placeholder="电话使用精准查询">
 			</div>
 			<div>
 				<span class="button_span" id="search">搜索</span>
@@ -78,6 +42,9 @@
 			<div style="float: right">
 				<span class="button_span" id="add">添加</span>
 			</div>
+            <div style="float: right">
+                <a class="button_span" style="width: 100px;" href="{:U('Index/info')}">个人中心</a>
+            </div>
 		</div>
 		<table id="content" lay-filter="data_table" width="900">
 
@@ -143,8 +110,8 @@
 
 <!--<script src="__STATIC__/js/layui-v2.5.6/layui.js"></script>-->
 <!--<script src="./public/static/js/jquery-3.3.1.min.js"></script>-->
-<script src="./public/static/js/jquery-3.6.0.min.js"></script>
-<script src="./public/static/js/layui-v2.5.6/layui.js"></script>
+<script src="__PUBLIC__/static/js/jquery-3.6.0.min.js"></script>
+<script src="__PUBLIC__/static/js/layui-v2.5.6/layui.js"></script>
 <script type="text/html" id="operation">
 	{{#  if(d.id > 0){ }}
 	<a class="file_btn" lay-event="edit_button" style="cursor:pointer">
@@ -168,7 +135,7 @@
             elem: '#content',
             id: 'content',
             cellMinWidth: 160,
-            url: "index.php/Admin/Ajax/test", //数据接口
+            url: "{:U('Ajax/test')}", //数据接口
             method: 'post',
             where: {},
             page: {

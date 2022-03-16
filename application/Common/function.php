@@ -2,6 +2,7 @@
 require __ROOT__.'config/config.php';
 include __APP__.'Common/Model.php';
 
+//接收参数
 function I($name = null,$default = null)
 {
     if ($name) {
@@ -85,4 +86,16 @@ function writeLog($message, $tip = 'warning', $path = '')
 
     $file_open = fopen($log_path.'/'.$log_name,'a+');
     fwrite($file_open,$message);
+}
+
+//解析url
+function U($url)
+{
+    $info = parse_url($url);
+    $path = __URL__.'/index.php/'.__MODULE__.'/'.$info['path'];
+    if ($info['query']) {
+        $path = $path.'?'.$info['query'];
+    }
+
+    return $path;
 }

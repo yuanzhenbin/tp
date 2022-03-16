@@ -9,6 +9,12 @@ class IndexController extends Tp
 	public function index()
 	{
 		$this->assign('test','测试');
-        $this->display('Index/index.html');
+        $this->display('Index/index');
 	}
+
+	//个人中心
+    public function info()
+    {
+        $this->display('Index/info');
+    }
 }
