@@ -71,6 +71,19 @@ class Tp
         $replacement = ['<?php echo ${1}${2}; ?>'];
         $repContent = preg_replace($pattern, $replacement, $repContent);
 
+        //{if}
+        $pattern = ['/\{if(.*)\$([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)(.*)}/i'];
+        $replacement = ['{if${1}$this->tpl_vars["${2}"]${3}}'];
+        $repContent = preg_replace($pattern, $replacement, $repContent);
+
+        $pattern = ['/\{if(.*)}/i'];
+        $replacement = ['<?php if(${1}) { ?>'];
+        $repContent = preg_replace($pattern, $replacement, $repContent);
+
+        $pattern = ['/\{\/if}/i'];
+        $replacement = ['<?php } ?>'];
+        $repContent = preg_replace($pattern, $replacement, $repContent);
+
 		return $repContent;
 	}
 }
