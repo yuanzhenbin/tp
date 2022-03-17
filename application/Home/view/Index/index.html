@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>测试前台</title>
+	<!--<link rel="stylesheet" type="text/css" href="__STATIC__/js/layui-v2.5.6/css/layui.css">-->
+	<link rel="stylesheet" href="__PUBLIC__/static/js/layui-v2.5.6/css/layui.css">
+    <link rel="stylesheet" href="__PUBLIC__/static/css/common.css">
+
+	<style>
+		body {
+			/*background:#A2FF82;*/
+			background-image: linear-gradient(#ff4500,#ff8500,yellow,#A2FF82,#0085ff,#bf3eff);
+		}
+		#box {
+			min-height: 600px;
+			min-width: 70%;
+			width:1000px;
+			text-align: center;
+			background: #fff;
+			margin: 0 auto;
+			margin-top: 20px;
+			padding: 30px 50px;
+		}
+	</style>
+</head>
+<body>
+	<div id="box">
+		<div style="width: 100%; height: 30px; padding-top: 20px; padding-bottom: 20px; font-size: 24px;">
+			首页
+		</div>
+		<div class="search_box">
+            <div style="float: right">
+                <a class="button_span" style="width: 100px;" href="{:U('Admin/Index/index')}">返回后台</a>
+            </div>
+		</div>
+	</div>
+</body>
+</html>
+
+<script src="__PUBLIC__/static/js/jquery-3.6.0.min.js"></script>
+<script src="__PUBLIC__/static/js/layui-v2.5.6/layui.js"></script>
+<script type="text/javascript">
+	layui.use(['form', 'laydate', 'table', 'layer'], function () {
+        var table = layui.table,
+            form = layui.form,
+            layer = layui.layer,
+            laydate = layui.laydate;
+    });
+</script>

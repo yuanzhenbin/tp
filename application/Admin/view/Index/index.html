@@ -31,10 +31,10 @@
 		</div>
 		<div class="search_box">
 			<div>
-				姓名$test：<input type="text" name="name_search" id="name_search" placeholder="姓名使用模糊查询">
+				姓名：<input type="text" name="name_search" id="name_search" placeholder="姓名使用模糊查询">
 			</div>
 			<div>
-				电话{$test}：<input type="text" name="phone_search" id="phone_search" placeholder="电话使用精准查询">
+				电话：<input type="text" name="phone_search" id="phone_search" placeholder="电话使用精准查询">
 			</div>
 			<div>
 				<span class="button_span" id="search">搜索</span>
@@ -45,6 +45,9 @@
             <div style="float: right">
                 <a class="button_span" style="width: 100px;" href="{:U('Index/info')}">个人中心</a>
             </div>
+			<div style="float: right">
+				<a class="button_span" style="width: 100px;" href="{:U('Home/Index/index')}">返回前台</a>
+			</div>
 		</div>
 		<table id="content" lay-filter="data_table" width="900">
 
@@ -108,8 +111,6 @@
 </body>
 </html>
 
-<!--<script src="__STATIC__/js/layui-v2.5.6/layui.js"></script>-->
-<!--<script src="./public/static/js/jquery-3.3.1.min.js"></script>-->
 <script src="__PUBLIC__/static/js/jquery-3.6.0.min.js"></script>
 <script src="__PUBLIC__/static/js/layui-v2.5.6/layui.js"></script>
 <script type="text/html" id="operation">
@@ -194,7 +195,7 @@
 						var phone = $('#edit_phone').val();
 						$.ajax({
 							type: 'post',
-							url: "index.php/Admin/Ajax/update",
+							url: "{:U('Ajax/update')}",
 							data: {
 								id: id,
 								name: name,
@@ -230,7 +231,7 @@
 					btn1: function (index) {
 						$.ajax({
 							type: 'post',
-							url: "index.php/Admin/Ajax/delete",
+							url: "{:U('Ajax/delete')}",
 							data: {
 								id: id,
 							},
@@ -280,7 +281,7 @@
 					var password = $('#add_password').val();
 					$.ajax({
 						type: 'post',
-						url: "index.php/Admin/Ajax/add",
+						url: "{:U('Ajax/add')}",
 						data: {
 							name: name,
 							phone: phone,

@@ -1,9 +1,13 @@
-<?php 
+<?php
+namespace Home\controller;
+include __APP__.'Common/function.php';
+include __APP__.'Common/Controller.php';
+use Common\Tp;
 
-class IndexController
+class IndexController extends Tp
 {
 	public function index()
 	{
-		echo '前端主页';
+        $this->display('Index/index');
 	}
 }

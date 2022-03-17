@@ -15,6 +15,8 @@ class IndexController extends Tp
 	//个人中心
     public function info()
     {
+        $info = M('user')->find();
+        $this->assign('info',$info);
         $this->display('Index/info');
     }
 }

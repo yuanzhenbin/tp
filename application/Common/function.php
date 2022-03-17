@@ -92,7 +92,15 @@ function writeLog($message, $tip = 'warning', $path = '')
 function U($url)
 {
     $info = parse_url($url);
-    $path = __URL__.'/index.php/'.__MODULE__.'/'.$info['path'];
+    $info_path = explode('/',$info['path']);
+    if (count($info_path) < 3) {
+        $path = __URL__ . '/index.php/' . __MODULE__ . '/' . $info['path'];
+    } else {
+        $module = $info_path[0];
+        unset($info_path[0]);
+        $info_path = implode('/',$info_path);
+        $path = __URL__ . '/index.php/' . $module . '/' . $info_path;
+    }
     if ($info['query']) {
         $path = $path.'?'.$info['query'];
     }

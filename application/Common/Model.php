@@ -120,7 +120,8 @@ class Model
 
         $connect = $this->db();
         $result = $connect->query($sql);
-        return $result->fetchAll(PDO::FETCH_ASSOC);
+        $res = $result->fetchAll(PDO::FETCH_ASSOC);
+        return $res[0];
     }
 
     public function count()

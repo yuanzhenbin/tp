@@ -51,33 +51,24 @@ class Tp
 	}
 
 	private function tpl_replace($content){
-		$pattern = array(
-				'/\{\s*\$([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)\s*\}/i'
-			);
-
-		$replacement = array(
-			'<?php echo $this->tpl_vars["${1}"]; ?>'
-			);
-
+	    //变量
+		$pattern = ['/\{\s*\$([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)\s*\}/i'];
+		$replacement = ['<?php echo $this->tpl_vars["${1}"]; ?>'];
 		$repContent = preg_replace($pattern, $replacement, $content);
 
-        $pattern = array(
-            '/(__[a-zA-Z]*(__)?)/i'
-        );
-
-        $replacement = array(
-            '<?php echo ${1}; ?>'
-        );
+        //数组 todo 只支持二维数组
+        $pattern = ['/\{\s*\$([a-zA-Z_\x7f-\xff].*)\[(.*)\]\s*\}/i'];
+        $replacement = ['<?php echo $this->tpl_vars["${1}"][${2}]; ?>'];
         $repContent = preg_replace($pattern, $replacement, $repContent);
 
-        $pattern = array(
-            '/\{:([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)(.*)\}/i'
-        );
+		//__常量__ 形式的常量
+        $pattern = ['/(__[a-zA-Z]*(__)?)/i'];
+        $replacement = ['<?php echo ${1}; ?>'];
+        $repContent = preg_replace($pattern, $replacement, $repContent);
 
-        $replacement = array(
-            '<?php echo ${1}${2}; ?>'
-        );
-
+        //函数
+        $pattern = ['/\{:([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)(.*)\}/i'];
+        $replacement = ['<?php echo ${1}${2}; ?>'];
         $repContent = preg_replace($pattern, $replacement, $repContent);
 
 		return $repContent;
