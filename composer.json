@@ -1,0 +1,5 @@
+{
+    "require": {
+        "topthink/think-template": "^1.0"
+    }
+}
