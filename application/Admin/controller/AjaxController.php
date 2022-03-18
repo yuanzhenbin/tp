@@ -2,9 +2,9 @@
 namespace Admin\controller;
 include __APP__.'Common/function.php';
 include __APP__.'Common/Controller.php';
-use Common\Tp;
+use Common\Controller;
 
-class AjaxController extends Tp
+class AjaxController extends Controller
 {
 	public function index()
 	{

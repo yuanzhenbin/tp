@@ -1,7 +1,7 @@
 <?php
 namespace Common;
 
-class Tp
+class Controller
 {
 	function __construct(){
         $this->tpl_vars = [];
